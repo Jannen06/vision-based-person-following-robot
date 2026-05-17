@@ -1,0 +1,68 @@
+<launch>
+  <!-- ========================= -->
+  <!-- 0. Arguments -->
+  <!-- ========================= -->
+  <arg name="kill_map_server" default="true"/>
+  <arg name="perception_script_path" default="$(find hsr_test)/scripts/perception_node.py"/>
+  <arg name="docker_env" default="$(find hsr_test)/scripts/docker_env/bin/activate"/>
+
+  <!-- ========================= -->
+  <!-- 1. Kill existing map_server (optional) -->
+  <!-- ========================= -->
+  <group if="$(arg kill_map_server)">
+    <node
+      pkg="hsr_test"
+      type="kill_node.sh"
+      name="kill_map_server"
+      output="screen"
+    />
+  </group>
+
+  <!-- ========================= -->
+  <!-- 2. LaserScan relay -->
+  <!-- /hsrb/base_scan → /scan -->
+  <!-- ========================= -->
+  <node
+    pkg="topic_tools"
+    type="relay"
+    name="scan_relay"
+    args="/hsrb/base_scan /scan"
+    output="screen"
+  />
+
+  <!-- ========================= -->
+  <!-- 3. SLAM Toolbox -->
+  <!-- ========================= -->
+  <include file="$(find slam_toolbox)/launch/online_async.launch">
+    <!-- Override params if needed -->
+    <!--
+    <arg name="base_frame" value="base_link"/>
+    <arg name="odom_frame" value="odom"/>
+    <arg name="map_frame" value="map"/>
+    -->
+  </include>
+
+  <!-- ========================= -->
+  <!-- 4. Run Navigation Node -->
+  <!-- ========================= -->
+  <node
+    pkg="hsr_test"
+    type="behavior_loop.py"
+    name="go_to_person_and_return"
+    output="screen"
+    required="false"
+  />
+
+  <!-- ========================= -->
+  <!-- 5. Run Perception Script with Docker Environment -->
+  <!-- ========================= -->  
+  <node
+    pkg="hsr_test"
+    type="perception_node.py"
+    name="perception_node"
+    output="screen"
+    launch-prefix="bash -c 'source $(arg docker_env) 2>/dev/null || true; exec python3 $(arg perception_script_path)'"
+    required="false"
+  />
+
+</launch>

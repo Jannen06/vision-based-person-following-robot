@@ -1,0 +1,5 @@
+<launch>
+  <!-- RViz with your custom config -->
+  <node name="rviz" pkg="rviz" type="rviz" required="true" 
+        args="-d $(find hsr_test)/config/latest_config.rviz" />
+</launch>

@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="hsr_test" type="speech_relay.py" name="speech_relay" output="screen" />
+  <node pkg="hsr_test" type="perception_node.py" name="perception_node" output="screen" />
+</launch>

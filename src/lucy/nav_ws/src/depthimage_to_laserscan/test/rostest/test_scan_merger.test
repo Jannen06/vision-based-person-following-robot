@@ -1,0 +1,7 @@
+<launch>
+  <include file="$(find depthimage_to_laserscan)/launch/merger.launch"/>
+
+  <test test-name="scan_merger_test"
+        pkg="depthimage_to_laserscan"
+        type="test_scan_merger.py"/>
+</launch>

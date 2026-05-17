@@ -1,0 +1,11 @@
+<launch>
+  <!-- Person Queue Manager Node -->
+  <!-- Maintains queue of detected persons and sends them to navigation_manager one by one -->
+  
+  <node pkg="hsr_navigation" type="person_queue_manager.py" name="person_queue_manager" output="screen">
+    <param name="max_queue_size" value="10" />
+    <param name="duplication_distance" value="1.5" />
+    <param name="publish_cooldown" value="2.0" />
+  </node>
+
+</launch>

@@ -1,0 +1,26 @@
+<launch>
+  <!-- =============================== -->
+  <!-- LaserScan Multi Merger Node    -->
+  <!-- =============================== -->
+
+  <!-- Must be outside <node> to guarantee it's on parameter server before node starts -->
+  <param name="/scan_merger/laserscan_topics" value="/hsrb/base_scan /depth_scan"/>
+
+  <node
+    pkg="ira_laser_tools"
+    type="laserscan_multi_merger"
+    name="scan_merger"
+    output="screen">
+
+    <!-- Destination frame: all scans will be transformed here -->
+    <param name="destination_frame"      value="base_link"/>
+    <!-- Topic where merged scan will be published -->
+    <param name="scan_destination_topic" value="/scan"/>
+    <param name="angle_min"              value="-3.14"/>
+    <param name="angle_max"              value="3.14"/>
+    <param name="angle_increment"        value="0.0058"/>
+    <param name="range_min"              value="0.05"/>
+    <param name="range_max"              value="6.0"/>
+  </node>
+
+</launch>

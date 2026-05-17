@@ -1,0 +1,5 @@
+<launch>
+  <include file="$(find hsr_test)/launch/mapping.launch" />
+  <include file="$(find hsr_test)/launch/navigation.launch" />
+  <include file="$(find hsr_test)/launch/visualization.launch" />
+</launch>

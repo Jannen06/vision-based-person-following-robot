@@ -1,0 +1,25 @@
+<launch>
+  <node pkg="topic_tools" type="relay" name="scan_relay" args="/hsrb/base_scan /scan" />
+  
+  <node pkg="slam_toolbox" type="async_slam_toolbox_node" name="slam_toolbox" output="screen" respawn="true" respawn_delay="2">
+    <rosparam command="load" file="$(find slam_toolbox)/config/mapper_params_online_async.yaml" />
+    
+    <!-- <param name="do_loop_closing" value="false" />
+    <param name="mode" value="mapping" />
+    <param name="map_update_interval" value="0.1" />
+    <param name="max_laser_range" value="5.8" />
+    <param name="resolution" value="0.05" />
+    <param name="minimum_time_interval" value="0.1" />
+    <param name="minimum_travel_distance" value="0.05" />
+    <param name="minimum_travel_heading" value="0.05" />
+    <param name="scan_buffer_size" value="15" />
+    <param name="throttle_scans" value="1" />
+    <param name="stack_size_to_use" value="40000000" /> -->
+  </node>
+  
+  <!-- MINIMAL TUNING: just fix inflation, leave everything else default -->
+  <node pkg="dynamic_reconfigure" type="dynparam" name="tune_inflation_global" 
+        args="set /move_base/global_costmap/inflater inflation_radius 0.30" />
+  <node pkg="dynamic_reconfigure" type="dynparam" name="tune_inflation_local" 
+        args="set /move_base/local_costmap/inflater inflation_radius 0.30" />
+</launch>

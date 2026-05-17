@@ -1,0 +1,37 @@
+<launch>
+  <!-- Relay the HSR base scan to the standard /scan topic -->
+  <node pkg="topic_tools" type="relay" name="scan_relay" args="/hsrb/base_scan /scan" />
+  
+  <node pkg="slam_toolbox" type="async_slam_toolbox_node" name="slam_toolbox" output="screen" respawn="true" respawn_delay="2">
+    <!-- Load base parameters -->
+    <rosparam command="load" file="$(find slam_toolbox)/config/mapper_params_online_async.yaml" />
+    
+    <param name="do_loop_closing" value="false" />
+    <param name="mode" value="mapping" />
+    
+    <!-- BASIC FAST SETTINGS -->
+    <!-- 1.0s update interval for immediate remapping -->
+    <param name="map_update_interval" value="1.0" /> 
+    
+    <!-- Use standard Lidar range now that system is stable -->
+    <param name="max_laser_range" value="8.0" /> 
+    
+    <param name="resolution" value="0.1" /> 
+    
+    <!-- Very sensitive travel thresholds -->
+    <param name="minimum_travel_distance" value="0.05" /> 
+    <param name="minimum_travel_heading" value="0.05" />
+    
+    <!-- Solver settings -->
+    <param name="solver_plugin" value="solver_plugins::CeresSolver" />
+    <param name="ceres_linear_solver" value="SPARSE_NORMAL_CHOLESKY" />
+    <param name="ceres_preconditioner" value="SCHUR_JACOBI" />
+    <param name="ceres_trust_strategy" value="LEVENBERG_MARQUARDT" />
+    
+    <!-- Process every scan for high density -->
+    <param name="scan_buffer_size" value="15" /> 
+    <param name="throttle_scans" value="1" /> 
+    
+    <param name="stack_size_to_use" value="40000000" />
+  </node>
+</launch>

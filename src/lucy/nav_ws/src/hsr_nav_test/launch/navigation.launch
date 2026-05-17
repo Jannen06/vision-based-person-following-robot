@@ -1,0 +1,3 @@
+<launch>
+  <node pkg="hsr_test" type="behavior_loop.py" name="behavior_node" output="screen" />
+</launch>

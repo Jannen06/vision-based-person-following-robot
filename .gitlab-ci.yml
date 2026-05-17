@@ -1,0 +1,89 @@
+image: ros:noetic
+
+stages:
+  - build
+  - test
+  - quality
+
+variables:
+  ROS_DISTRO: "noetic"
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  # Force Python (and therefore rosdep/apt) to prefer IPv4 to avoid network timeouts
+  PYTHONWARNINGS: "ignore"
+  http_proxy: ""
+
+cache:
+  paths:
+    - .cache/pip
+
+build_package:
+  stage: build
+  tags:
+    - ros
+    - docker
+    - noetic
+  before_script:
+    - apt-get update
+    - apt-get install -y python3-catkin-tools python3-rosdep ros-noetic-control-msgs ros-noetic-tf2-ros ros-noetic-tf2-geometry-msgs
+    - rosdep init || true
+    - rosdep update || true
+  script:
+    - source /opt/ros/$ROS_DISTRO/setup.bash
+    - rosdep install --from-paths src --ignore-src -r -y
+    # Blacklisting it here prevents it from compiling during the build stage
+    - catkin_make -DCATKIN_BLACKLIST_PACKAGES="depthimage_to_laserscan"
+  artifacts:
+    paths:
+      - devel/
+      - build/
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'push'
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH =~ /^feature\/.*/
+
+unit_tests:
+  stage: test
+  tags:
+    - ros
+    - docker
+    - noetic
+  dependencies:
+    - build_package
+  before_script:
+    - apt-get update
+    # Notice: No rosdep init/update here, and no image_transport, saving lots of time!
+    - apt-get install -y python3-catkin-tools python3-pytest python3-pytest-cov python3-opencv ros-noetic-control-msgs ros-noetic-tf2-ros ros-noetic-tf2-geometry-msgs
+  script:
+    - source devel/setup.bash
+    # Blacklisting the package here prevents its tests from running
+    - catkin_make run_tests -DCATKIN_BLACKLIST_PACKAGES="depthimage_to_laserscan"
+    - export PYTHONPATH=$PYTHONPATH:$(find $(pwd)/src -type d -name "scripts" | tr '\n' ':')
+    - python3 -m pytest -v
+    - catkin_test_results build
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'push'
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH =~ /^feature\/.*/
+
+linting:
+  stage: quality
+  image: python:3.8
+  tags:
+    - ros
+    - docker
+    - noetic
+  before_script:
+    - pip install flake8
+  script:
+    - flake8 src/lucy/hsr_ws/src/hsr_perception/scripts/ --max-line-length=120 --ignore=E501,W503 --statistics || true
+    - flake8 src/lucy/hsr_ws/src/hsr_navigation/scripts/ --max-line-length=120 --ignore=E501,W503 --statistics || true
+    - flake8 src/lucy/hsr_ws/src/llm_server/scripts/ --max-line-length=120 --ignore=E501,W503 --statistics || true
+    - flake8 tests/ --max-line-length=120 --ignore=W291,W292,W293,F401,E402,E701 --statistics
+  allow_failure: true
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'push'
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH =~ /^feature\/.*/

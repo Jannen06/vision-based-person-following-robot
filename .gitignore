@@ -1,0 +1,37 @@
+.venv/
+perception_env/
+*.bag
+src/hsr_detection/hsr_detection/detection/docker_env/
+src/lucy/hsr_ws/build/
+src/lucy/hsr_ws/devel/
+src/lucy/hsr_ws/logs/
+src/lucy/hsr_ws/.vscode/
+src/lucy/hsr_ws/.catkin_tools/
+
+src/lucy/nav_ws/build/
+src/lucy/nav_ws/devel/
+src/lucy/nav_ws/logs/
+src/lucy/nav_ws/.vscode/
+src/lucy/nav_ws/.catkin_tools/
+
+# Pytest
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+
+
+build/
+install/
+log/
+

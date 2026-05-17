@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>hsr_navigation</name>
+  <version>1.0.0</version>
+  <description>Custom navigation stack for Toyota HSR with A* global planner and field-based local planner</description>
+  
+  <maintainer email="your_email@example.com">Your Name</maintainer>
+  <license>MIT</license>
+  
+  <buildtool_depend>catkin</buildtool_depend>
+  
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>visualization_msgs</depend>
+  <depend>tf2_ros</depend>
+  <depend>tf2_geometry_msgs</depend>
+  
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>python3-opencv</exec_depend>
+  
+  <export>
+  </export>
+</package>

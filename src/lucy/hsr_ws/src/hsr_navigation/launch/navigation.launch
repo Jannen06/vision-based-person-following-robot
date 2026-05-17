@@ -1,0 +1,52 @@
+<launch>
+  <!-- SLAM Toolbox & Core Maps -->
+  <include file="$(find hsr_test)/launch/mapping.launch" />
+  
+  <!-- Navigation Manager -->
+  <node pkg="hsr_navigation" type="navigation_manager.py" name="navigation_manager" output="screen">
+    <param name="localization_source" value="slam" />
+    <!-- <param name="robot_radius" value="0.1" /> -->
+    <param name="waypoint_distance" value="1.0" />
+    <param name="waypoint_angle" value="0.4" />
+    <param name="waypoint_method" value="distance" />  <!-- Use 'distance' for grid A* -->
+    <param name="replan_distance" value="2.0" />  <!-- Replan when 2m from temp goal -->
+  </node>
+  
+  <!-- Person Queue Manager -->
+  <node pkg="hsr_navigation" type="person_queue_manager.py" name="person_queue_manager" output="screen">
+    <param name="max_queue_size" value="10" />
+    <param name="duplication_distance" value="1.5" />
+  </node>
+  
+  <!-- Field Based Planner -->
+  <node pkg="hsr_navigation" type="field_planner.py" name="field_based_planner" output="screen">
+    <param name="ka" value="0.75" />
+    <param name="kr" value="4.0" />
+    <param name="p_0" value="0.4" />
+    <param name="stop_threshold" value="0.35" />
+    <param name="slowdown_radius" value="0.75" />
+    <param name="max_linear_vel" value="0.2" />
+    <param name="angular_tolerance" value="0.1" />
+    <param name="stuck_time_threshold" value="2.0" />
+    <param name="stuck_dist_threshold" value="0.03" />
+    <param name="recovery_duration" value="2.5" />
+    <param name="recovery_reverse_vel" value="-0.08" />
+  </node>
+  
+  <!-- RViz -->
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find hsr_navigation)/config/nav_stack_config.rviz" />
+
+  <node pkg="llm_server" type="whisper_service_node.py" name="whisper_service_node" output="screen" />
+
+  <!-- Runs the Ollama LLM Service -->
+  <node pkg="llm_server" type="restaurant_service_node.py" name="order_extraction_service" output="screen">
+      <param name="ollama_model" value="granite3.1-moe:1b" />
+  </node>
+  
+  <!-- Runs the Speech & Workflow Interaction -->
+  <node pkg="llm_server" type="restaurant_hri_node.py" name="restaurant_hri_node" output="screen">
+      <!-- Directory to save JSON orders -->
+      <param name="json_dir" value="/tmp/hri_orders" />
+  </node>
+  
+</launch>

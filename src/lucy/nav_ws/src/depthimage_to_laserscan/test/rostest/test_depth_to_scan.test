@@ -1,0 +1,8 @@
+
+<launch>
+  <include file="$(find depthimage_to_laserscan)/launch/launchfile_sample.launch"/>
+
+  <test test-name="depth_to_scan_test"
+        pkg="depthimage_to_laserscan"
+        type="test_depth_to_scan.py"/>
+</launch>

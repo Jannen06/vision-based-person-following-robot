@@ -1,0 +1,28 @@
+<launch>
+
+  <node
+    name="depthimage_to_laserscan"
+    pkg="depthimage_to_laserscan"
+    type="depthimage_to_laserscan"
+    output="screen">
+
+    <!-- Depth image -->
+    <remap from="image" to="/hsrb/head_rgbd_sensor/depth_registered/image_rect_raw"/>
+
+    <!-- Camera info -->
+    <remap from="camera_info" to="/hsrb/head_rgbd_sensor/ir/camera_info"/>
+    <remap from="scan" to="/depth_scan"/>
+    <!-- Parameters -->
+    <param name="scan_height" value="8"/>
+    <param name="scan_time" value="0.033"/>
+    <param name="range_min" value="0.45"/>
+    <param name="range_max" value="5.0"/>
+
+    <!-- Frame should match TF -->
+    <!-- <param name="output_frame_id" value="base_link"/> -->
+    <param name="output_frame_id" value="head_rgbd_sensor_depth_frame``"/>
+
+
+  </node>
+
+</launch>

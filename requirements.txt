@@ -1,0 +1,22 @@
+# Testing 
+pytest==8.3.5
+pytest-cov==6.1.0
+
+# Vision 
+ultralytics>=8.3.0          # YOLO pose estimation (gesture_detector.py)
+opencv-python-headless      # Image processing (headless = no display deps)
+numpy                       # Array ops throughout
+
+# Speech / STT
+SpeechRecognition>=3.10.0   # sr.Recognizer / sr.Microphone (whisper_service_node.py)
+openai-whisper>=20231117    # Local Whisper model for transcription
+pyaudio>=0.2.13             # Microphone backend required by SpeechRecognition
+
+# LLM
+ollama>=0.2.0               # Ollama Python client (restaurant_service_node.py)
+
+# ROS Python deps (non-catkin, must be pip-installed)
+# Note: core ROS packages (rospy, std_msgs, geometry_msgs, etc.) are installed
+# via apt / rosdep and are not listed here.
+rospkg                      # Runtime ROS package path resolution
+catkin-pkg                  # Required by rospkg

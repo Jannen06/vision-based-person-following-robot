@@ -1,0 +1,11 @@
+<launch>
+  <node pkg="hsr_test" type="behavior_loop.py" name="behavior_node" output="screen" />
+  <!-- <node pkg="hsr_test" type="visualize_goals.py" name="goal_visualizer" output="screen" /> -->
+
+  
+  <!-- Tune HSR's internal move_base inflation -->
+  <!-- <node pkg="dynamic_reconfigure" type="dynparam" name="tune_inflation_global"
+        args="set /move_base/global_costmap/inflation_layer inflation_radius 0.25" />
+  <node pkg="dynamic_reconfigure" type="dynparam" name="tune_inflation_local"
+        args="set /move_base/local_costmap/inflation_layer inflation_radius 0.30" /> -->
+</launch>
